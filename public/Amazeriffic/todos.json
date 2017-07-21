@@ -1,0 +1,31 @@
+[
+  {
+    "description" : "Get groceries",
+    "tags"        : [ "shopping", "chores", "family" ]
+  },
+
+  {
+    "description" : "Make up some new todos",
+    "tags"        : [ "writing", "work" ]
+  },
+
+  {
+    "description" : "Prep for job search",
+    "tags"        : [ "work", "job search" ]
+  },
+
+  {
+    "description" : "Answer e-mails",
+    "tags"        : [ "work" ]
+  },
+
+  {
+    "description" : "Take Sophia to the park",
+    "tags"        : [ "chores", "family" ]
+  },
+
+  {
+    "description" : "Finish web apps book",
+    "tags"        : [ "job search", "work" ]
+  }
+]
