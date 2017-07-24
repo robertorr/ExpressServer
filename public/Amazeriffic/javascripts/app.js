@@ -14,6 +14,7 @@ var organizeByTag = function (todoObjects) {
             }
         });
     });
+    tags.sort();
 
     return tags.map(function (tag) {
         var taggedTodos = [];
@@ -35,11 +36,13 @@ var main = function (todoObjs) {
     const tabsSelector = ".tabs a span";
 
     var todos = [];
+
     var updateTodos = function (todoObjects) {
         todos = todoObjects.map(function (todo) {
             return todo.description;
         });
     };
+
     var addNewTodo = function () {
         var description = $(inputSelector + ".description").val();
         if (description !== "") {
@@ -90,13 +93,13 @@ var main = function (todoObjs) {
             } else if (jqElement.parent().is(":nth-child(4)")) {
                 jqContent = $("<h3>").text("Description (required):");
                 $(mainSelector).append(jqContent);
-                jqContent = $("<input type=\"text\" />").addClass("description");
+                jqContent = $("<input>").addClass("description");
                 $(mainSelector).append(jqContent);
                 $(mainSelector).append($("<br>"));
                 $(mainSelector).append($("<br>"));
                 jqContent = $("<h3>").text("Tags (optional):");
                 $(mainSelector).append(jqContent);
-                jqContent = $("<input type=\"text\" />").addClass("tags");
+                jqContent = $("<input>").addClass("tags");
                 $(mainSelector).append(jqContent);
                 $(mainSelector).append($("<br>"));
                 $(mainSelector).append($("<br>"));
