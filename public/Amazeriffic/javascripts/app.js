@@ -47,7 +47,12 @@ var main = function (todoObjs) {
         var description = $(inputSelector + ".description").val();
         if (description !== "") {
             var tags = $(inputSelector + ".tags").val().split(",");
-            todoObjs.push({"description": description, "tags": tags});
+            var newTodo = {"description": description, "tags": tags}
+            todoObjs.push(newTodo);
+            $.post("/todos", newTodo, function (response) {
+                console.log("post to the server");
+                console.log(response);
+            });
             updateTodos(todoObjs);
             $(inputSelector).val("");
         }
