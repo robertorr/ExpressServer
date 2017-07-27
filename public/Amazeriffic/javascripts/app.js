@@ -15,6 +15,7 @@ var organizeByTag = function (todoObjects) {
         });
     });
     tags.sort();
+    console.log("tags = " + tags);
 
     return tags.map(function (tag) {
         var taggedTodos = [];
@@ -23,7 +24,7 @@ var organizeByTag = function (todoObjects) {
                 taggedTodos.push(todoObj.description);
             }
         });
-        return {"name": tag, "todos": taggedTodos};
+        return {name: tag, todos: taggedTodos};
     });
 };
 
@@ -47,8 +48,10 @@ var main = function (todoObjs) {
         var description = $(inputSelector + ".description").val();
         if (description !== "") {
             var tags = $(inputSelector + ".tags").val().split(",");
-            var newTodo = {"description": description, "tags": tags}
+            console.log(tags);
+            var newTodo = {description: description, tags: tags};
             todoObjs.push(newTodo);
+            console.log(newTodo);
             $.post("/todos", newTodo, function (response) {
                 console.log("post to the server");
                 console.log(response);
@@ -83,7 +86,9 @@ var main = function (todoObjs) {
                 });
                 $(mainSelector).append(jqContent);
             } else if (jqElement.parent().is(":nth-child(3)")) {
+                console.log("selected 'tags' tab");
                 var todosByTags = organizeByTag(todoObjs);
+                console.log("got todos by tag: " + todosByTags);
                 todosByTags.forEach(function (tag) {
                     var jqTagName = $("<h3>").text(tag.name);
                     jqContent = $("<ul>");
@@ -129,7 +134,7 @@ var main = function (todoObjs) {
 
 $(document).ready(function () {
     "use strict";
-    $.getJSON("todos.json", function (todoObjects) {
+    $.getJSON("/todos.json", function (todoObjects) {
         main(todoObjects);
     });
 });

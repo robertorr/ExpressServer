@@ -15,7 +15,7 @@ var tweetCounts = tweetCounter(tweetTerms);
 var startDatetime = (new Date).getTime();
 
 // Amazeriffic
-var todos = require('./public/Amazeriffic/todos.json');
+var todos = require('./public/Amazeriffic/todos_file.json');
 
 // app creation and setup
 var app = express();
@@ -26,7 +26,7 @@ app.set('view engine', 'jade');
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 ///////////////////
@@ -66,11 +66,10 @@ app.use('/todos.json', function (req, res) {
 
 app.post('/todos', function (req, res) {
     "use strict";
-    console.log("todo data posted to the server:");
+    console.log("todo data posted to the server");
     var newTodo = req.body;
     console.log(newTodo);
     todos.push(newTodo);
-    console.log(todos);
     res.json({message: "post received"});
 });
 
