@@ -1,26 +1,38 @@
 var Twitter = require("twitter");
 var credentials = require("./credentials.json");
-var client = new Twitter(credentials);
+var twitterClient = new Twitter(credentials);
+var redis = require("redis");
+var redisClient = redis.createClient();
 
 var createTweetCounter = function (searchTerms) {
     "use strict";
 
     var counts = {};
-    searchTerms.forEach(function (term) {
+    redisClient.mget(searchTerms, function (err, redisCounts) {
         "use strict";
-        counts[term] = 0
+        if (err !== null) {
+            console.error("error: " + err);
+            return;
+        }
+
+        for (var i = 0; i < searchTerms.length; i++) {
+            counts[searchTerms[i]] = parseInt(redisCounts[i], 10) || 0;
+            console.log("'" + searchTerms[i] + "': " + counts[searchTerms[i]]);
+        }
     });
 
     console.log("running tweet counter...");
 
     var params = {track: searchTerms.join(',')};
-    client.stream('statuses/filter', params, function (stream) {
+    twitterClient.stream('statuses/filter', params, function (stream) {
             "use strict";
             stream.on("data", function (tweet) {
                 if (tweet && tweet.text) {
                     searchTerms.forEach(function (term) {
-                        if (tweet.text.indexOf(term) > -1)
+                        if (tweet.text.indexOf(term) > -1) {
                             counts[term] += 1;
+                            redisClient.incr(term);
+                        }
                     });
                 }
             });

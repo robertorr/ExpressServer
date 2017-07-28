@@ -15,7 +15,14 @@ var tweetCounts = tweetCounter(tweetTerms);
 var startDatetime = (new Date).getTime();
 
 // Amazeriffic
-var todos = require('./public/Amazeriffic/todos_file.json');
+// var todos = require('./public/Amazeriffic/todos_file.json');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/amazeriffic');
+var ToDoSchema = mongoose.Schema({
+    description: String,
+    tags: [ String ]
+});
+var ToDo = mongoose.model("ToDo", ToDoSchema);
 
 // app creation and setup
 var app = express();
@@ -61,16 +68,40 @@ app.use('/counts.json', function (req, res) {
 // Amazeriffic routes
 app.use('/todos.json', function (req, res) {
     "use strict";
-    res.json(todos);
+    ToDo.find({}, function (err, todos) {
+        if (err !== null) {
+            console.error("mongoose find() error:");
+            console.error(err);
+            return;
+        }
+        res.json(todos);
+    });
 });
 
 app.post('/todos', function (req, res) {
     "use strict";
-    console.log("todo data posted to the server");
-    var newTodo = req.body;
+    console.log("todo data posted to the server:");
+    var newTodo = new ToDo({
+        "description": req.body.description,
+        "tags": req.body.tags
+    });
     console.log(newTodo);
-    todos.push(newTodo);
-    res.json({message: "post received"});
+    newTodo.save(function (err, result) {
+        if (err !== null) {
+            console.error("mongoose save() error:");
+            console.error(err);
+            res.send("ERROR");
+        } else {
+            ToDo.find({}, function (err, result) {
+                if (err !== null) {
+                    console.error("mongoose find() error:");
+                    console.error(err);
+                    res.send("ERROR");
+                }
+                res.json(result);
+            });
+        }
+    });
 });
 
 // ERROR HANDLERS
