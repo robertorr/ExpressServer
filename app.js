@@ -15,9 +15,18 @@ var tweetCounts = tweetCounter(tweetTerms);
 var startDatetime = (new Date).getTime();
 
 // Amazeriffic
-// var todos = require('./public/Amazeriffic/todos_file.json');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/amazeriffic');
+var services = null;
+var mongoUrl = null;
+if (process.env.VCAP_SERVICES) {
+    console.log("VCAP_SERVICES:");
+    console.log(process.env.VCAP_SERVICES);
+    services = JSON.parse(process.env.VCAP_SERVICES);
+    mongoUrl = services["mlab"][0].credentials.uri;
+} else {
+    mongoUrl = "mongodb://localhost/amazeriffic";
+}
+mongoose.connect(mongoUrl);
 var ToDoSchema = mongoose.Schema({
     description: String,
     tags: [ String ]

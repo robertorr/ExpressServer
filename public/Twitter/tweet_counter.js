@@ -2,7 +2,21 @@ var Twitter = require("twitter");
 var credentials = require("./credentials.json");
 var twitterClient = new Twitter(credentials);
 var redis = require("redis");
-var redisClient = redis.createClient();
+
+var services = null;
+var redisCredentials = null;
+if (process.env.VCAP_SERVICES) {
+    services = JSON.parse(process.env.VCAP_SERVICES);
+    redisCredentials = services["rediscloud"][0].credentials;
+} else {
+    redisCredentials = {
+        "hostname": "127.0.0.1",
+        "port": "6379",
+        "password": null
+    };
+}
+var redisClient = redis.createClient(redisCredentials.port, redisCredentials.hostname);
+redisClient.auth(redisCredentials.password);
 
 var createTweetCounter = function (searchTerms) {
     "use strict";
